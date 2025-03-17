@@ -27,7 +27,7 @@ public class Article {
     @Column(columnDefinition = "TEXT")
     private String body;
 
-    // ВАЖНО: тип поля author – Author
+
     @ManyToOne
     @JoinColumn(name = "author_id")
     private Author author;
@@ -46,7 +46,7 @@ public class Article {
     @OneToMany(mappedBy = "article", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<ArticleFavorite> favorites = new ArrayList<>();
 
-    // Getters / Setters
+
 
     public Long getId() {
         return id;

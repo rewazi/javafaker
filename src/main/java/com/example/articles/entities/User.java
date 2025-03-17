@@ -22,11 +22,7 @@ public class User {
     @Column(columnDefinition = "TEXT")
     private String bio;
 
-    // Убрали или не используем в данном контексте mappedBy="author"
-    // Пускай User будет для комментариев и favorites
-    // т.е. User НЕ знает о статьях, это делает Author.
-    // @OneToMany(mappedBy = "author", cascade = CascadeType.ALL, orphanRemoval = true)
-    // private List<Article> articles;
+
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<ArticleComment> comments = new ArrayList<>();
@@ -34,7 +30,7 @@ public class User {
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<ArticleFavorite> favorites = new ArrayList<>();
 
-    // Getters / Setters
+
 
     public Long getId() {
         return id;

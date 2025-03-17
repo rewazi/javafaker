@@ -10,7 +10,7 @@
 <div class="container mt-5">
   <div class="card shadow p-4">
     <h2 class="text-center mb-4">Редактировать пользователя</h2>
-    <!-- При сабмите идёт POST на /users/update/{id} -->
+
     <form th:action="@{/users/update/{id}(id=${user.id})}" method="post">
       <div class="mb-3">
         <label class="form-label">Имя пользователя</label>
@@ -30,7 +30,7 @@
       </div>
       <div class="mb-3">
         <label class="form-label">Фото профиля (URL)</label>
-        <!-- Изменено имя поля с image_url на imageUrl -->
+
         <input type="text" name="imageUrl" class="form-control" th:value="${user.imageUrl}">
       </div>
 

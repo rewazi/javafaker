@@ -16,11 +16,11 @@ public interface UserService {
 
 
 
-    void deleteUser(UUID id);
+    void deleteUser(Long id);
 
     void updateUser(UUID id, User user);
 
     Optional<User> getUserById(UUID id);
 
-    void deleteUser(Long id);
+
 }

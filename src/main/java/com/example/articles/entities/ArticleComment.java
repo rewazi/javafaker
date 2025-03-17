@@ -25,7 +25,7 @@ public class ArticleComment {
     @JoinColumn(name = "user_id")
     private User user;
 
-    // --- Геттеры и сеттеры ---
+
     public Long getId() {
         return id;
     }

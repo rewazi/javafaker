@@ -19,7 +19,7 @@ public class Tag {
     @ManyToMany(mappedBy = "tags")
     private Set<Article> articles = new HashSet<>();
 
-    // --- Геттеры и сеттеры ---
+
     public Long getId() {
         return id;
     }

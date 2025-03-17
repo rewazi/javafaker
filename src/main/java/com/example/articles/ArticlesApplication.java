@@ -46,7 +46,7 @@ public class ArticlesApplication implements CommandLineRunner {
 		Scanner scanner = new Scanner(System.in);
 		int choice = -1;
 		while (choice != 0) {
-			printMenu();
+
 			try {
 				choice = Integer.parseInt(scanner.nextLine());
 			} catch (NumberFormatException e) {
@@ -103,7 +103,7 @@ public class ArticlesApplication implements CommandLineRunner {
 				case 8:
 					System.out.print("Введите id автора (author_id): ");
 					Long authorId = Long.parseLong(scanner.nextLine());
-					// Так как поле author в Article имеет тип User, ищем пользователя по id
+
 					Optional<User> authorOpt = userRepository.findById(authorId);
 					if (authorOpt.isPresent()) {
 						List<Article> articlesByAuthor = articleRepository.findByAuthor_Id(authorId);
@@ -159,29 +159,10 @@ public class ArticlesApplication implements CommandLineRunner {
 				default:
 					System.out.println("Неверный выбор. Пожалуйста, попробуйте снова.");
 			}
-			System.out.println(); // пустая строка для разделения выводов
+			System.out.println();
 		}
 		scanner.close();
 	}
 
-	private void printMenu() {
-		System.out.println("---------- Меню ----------");
-		System.out.println("0. Выход");
-		System.out.println("1. Получить комментарии к статье по id");
-		System.out.println("2. Получить комментарии пользователя по id");
-		System.out.println("3. Получить лайки пользователя по id");
-		System.out.println("4. Получить лайки статьи по id");
-		System.out.println("5. Найти статьи по полному названию");
-		System.out.println("6. Найти статьи по части названия");
-		System.out.println("7. Найти статьи по тегу");
-		System.out.println("8. Найти статьи по автору");
-		System.out.println("9. Найти тег по точному имени");
-		System.out.println("10. Найти теги по части имени");
-		System.out.println("11. Найти пользователя по email");
-		System.out.println("12. Найти пользователя по username");
-		System.out.println("13. Найти пользователей, email которых содержит часть");
-		System.out.println("14. Найти пользователей, username которых содержит часть");
-		System.out.println("15. Комбинированный поиск пользователей (email или username)");
-		System.out.print("Выберите пункт меню: ");
-	}
+
 }

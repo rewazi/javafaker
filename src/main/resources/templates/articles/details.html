@@ -14,7 +14,6 @@
         <p><strong>Заголовок:</strong> <span th:text="${article.title}"></span></p>
         <p><strong>Описание:</strong> <span th:text="${article.description}"></span></p>
         <p><strong>Содержимое:</strong></p>
-        <!-- Используем поле body вместо content -->
         <p th:text="${article.body}"></p>
 
         <p><strong>Автор:</strong> <span th:text="${article.author.username}"></span></p>

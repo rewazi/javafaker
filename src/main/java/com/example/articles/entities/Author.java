@@ -21,7 +21,7 @@ public class Author {
     @Column(length = 255)
     private String bio;
 
-    // Двусторонняя связь со статьями
+
     @OneToMany(mappedBy = "author") // поле author в Article (типа Author)
     private List<Article> articles;
 
@@ -45,7 +45,7 @@ public class Author {
         this.updatedAt = updatedAt;
     }
 
-    // Геттеры и сеттеры:
+
     public Long getId() {
         return id;
     }

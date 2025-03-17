@@ -26,7 +26,6 @@
                 <td th:text="${article.id}"></td>
                 <td th:text="${article.title}"></td>
                 <td th:text="${article.description}"></td>
-                <!-- Используем поле username для автора -->
                 <td th:text="${article.author.username}"></td>
                 <td>
                     <a th:href="@{/articles/{id}(id=${article.id})}" class="btn btn-info btn-sm">Детали</a>
