@@ -34,20 +34,20 @@ private final UserService userService;
     return "users/add";
 }
 @PostMapping("/edit/{id}")
-    public String ShowUpdateForm(@PathVariable Long id, Model model) {
+    public String ShowUpdateForm(@PathVariable UUID id, Model model) {
     Optional<User> user = userService.getUserById(id);
     user.ifPresent(value -> model.addAttribute("user", value));
     return "users/edit";
 }
 
-@PostMapping("/update{id}")
+@PostMapping("/update/{id}")
     public String updateUser(@PathVariable UUID id, @ModelAttribute User user) {
-    userService.deleteUser(id, user);
-    return "redirect:/user/new";
+    userService.updateUser(id, user);
+    return "redirect:/user";
 }
-@GetMapping("/delete/{id}")
+@PostMapping("/delete/{id}")
     public String deleteUser(@PathVariable UUID id) {
-    userService.updateUser(id);
+    userService.deleteUser(id);
     return "redirect:/users";
 }
 }

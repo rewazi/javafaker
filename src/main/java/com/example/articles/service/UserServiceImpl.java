@@ -47,13 +47,18 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public void deleteUser(UUID id, User user) {
+    public void deleteUser(UUID id) {
 
     }
 
     @Override
-    public void updateUser(UUID id) {
+    public void updateUser(UUID id, User user) {
 
+    }
+
+    @Override
+    public Optional<User> getUserById(UUID id) {
+        return Optional.empty();
     }
 
 

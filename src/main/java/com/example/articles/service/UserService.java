@@ -12,7 +12,13 @@ public interface UserService {
     User updateUser(Long id, User updatedUser);
    
 
-    void deleteUser(UUID id, User user);
+ 
 
-    void updateUser(UUID id);
+
+
+    void deleteUser(UUID id);
+
+    void updateUser(UUID id, User user);
+
+    Optional<User> getUserById(UUID id);
 }
