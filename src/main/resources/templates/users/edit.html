@@ -10,6 +10,7 @@
 <div class="container mt-5">
   <div class="card shadow p-4">
     <h2 class="text-center mb-4">Редактировать пользователя</h2>
+    <!-- При сабмите идёт POST на /users/update/{id} -->
     <form th:action="@{/users/update/{id}(id=${user.id})}" method="post">
       <div class="mb-3">
         <label class="form-label">Имя пользователя</label>

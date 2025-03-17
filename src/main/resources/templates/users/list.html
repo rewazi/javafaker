@@ -22,17 +22,23 @@
             </thead>
             <tbody>
             <tr th:each="user : ${users}">
-                <td th:text="${user.id}"></td>
-                <td th:text="${user.username}"></td>
-                <td th:text="${user.email}"></td>
+                <td th:text="${user.id}">ID</td>
+                <td th:text="${user.username}">Имя</td>
+                <td th:text="${user.email}">Email</td>
                 <td>
-                    <!-- Изменено имя поля с image_url на imageUrl -->
-                    <img th:src="${user.imageUrl}" alt="Фото профиля" class="img-thumbnail" width="50">
+                    <!-- Используем user.imageUrl -->
+                    <img th:src="${user.imageUrl}"
+                         alt="Фото профиля"
+                         class="img-thumbnail"
+                         width="50">
                 </td>
                 <td>
-                    <a th:href="@{/user/edit/{id}(id=${user.id})}" class="btn btn-info btn-sm">Редактировать</a>
-
-                    <a th:href="@{/user/delete/{id}(id=${user.id})}" class="btn btn-danger btn-sm"
+                    <!-- Исправлено на /users/edit/{id} -->
+                    <a th:href="@{/users/edit/{id}(id=${user.id})}"
+                       class="btn btn-info btn-sm">Редактировать</a>
+                    <!-- Исправлено на /users/delete/{id} -->
+                    <a th:href="@{/users/delete/{id}(id=${user.id})}"
+                       class="btn btn-danger btn-sm"
                        onclick="return confirm('Вы уверены, что хотите удалить пользователя?')">Удалить</a>
                 </td>
             </tr>
@@ -40,6 +46,7 @@
         </table>
 
         <div class="text-center mt-3">
+            <!-- Исправлено на /users/new -->
             <a href="/users/new" class="btn btn-success">Добавить пользователя</a>
         </div>
     </div>

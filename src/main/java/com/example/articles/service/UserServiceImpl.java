@@ -61,5 +61,10 @@ public class UserServiceImpl implements UserService {
         return Optional.empty();
     }
 
+    @Override
+    public void deleteUser(Long id) {
+
+    }
+
 
 }
