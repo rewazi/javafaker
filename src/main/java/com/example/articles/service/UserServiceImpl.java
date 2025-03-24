@@ -2,21 +2,27 @@ package com.example.articles.service;
 
 import com.example.articles.entities.User;
 import com.example.articles.repositories.UserRepository;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import com.example.articles.roles.Role;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
 @Service
 public class UserServiceImpl implements UserService {
-    private final UserRepository userRepository;
 
-    public UserServiceImpl(UserRepository userRepository) {
+    private final UserRepository userRepository;
+    private final PasswordEncoder passwordEncoder;
+
+    public UserServiceImpl(UserRepository userRepository,
+                           PasswordEncoder passwordEncoder) {
         this.userRepository = userRepository;
+        this.passwordEncoder = passwordEncoder;
     }
 
+    // Существующие методы
     @Override
     public List<User> getAllUsers() {
         return userRepository.findAll();
@@ -29,23 +35,22 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public User createUser(User user) {
-        System.out.println("Сохранение пользователя в БД: " + user);
-        User savedUser = userRepository.save(user);
-        System.out.println("Пользователь сохранен: " + savedUser);
-        return savedUser;
+        // createUser может отвечать за создание пользователя без привязки к логике регистрации,
+        // или наоборот вы можете здесь делать ту же логику. Это на ваше усмотрение.
+        return userRepository.save(user);
     }
 
     @Override
     public User updateUser(Long id, User updatedUser) {
         return userRepository.findById(id)
-                .map(user -> {
-                    user.setUsername(updatedUser.getUsername());
-                    user.setEmail(updatedUser.getEmail());
-                    user.setBio(updatedUser.getBio());
-                    user.setImageUrl(updatedUser.getImageUrl());
-                    return userRepository.save(user);
+                .map(existing -> {
+                    existing.setUsername(updatedUser.getUsername());
+                    existing.setEmail(updatedUser.getEmail());
+                    existing.setBio(updatedUser.getBio());
+                    // Пароль, роль и т.д. при апдейте тоже можно обновлять
+                    return userRepository.save(existing);
                 })
-                .orElseThrow(() -> new IllegalArgumentException("Пользователь не найден"));
+                .orElseThrow(() -> new IllegalArgumentException("Пользователь не найден: id=" + id));
     }
 
     @Override
@@ -55,24 +60,33 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public void updateUser(UUID id, User user) {
-
+        // Если вам нужен метод для UUID, реализуйте аналогично
     }
 
     @Override
     public Optional<User> getUserById(UUID id) {
+        // Аналогично, если вам нужно по UUID
         return Optional.empty();
     }
 
+    // Новый метод для регистрации
+    @Override
+    public User registerNewUser(User user) {
+        // Проверяем, нет ли уже пользователя с таким email
+        userRepository.findByEmail(user.getEmail())
+                .ifPresent(existing -> {
+                    throw new IllegalArgumentException("Пользователь с таким email уже существует");
+                });
 
+        // Хешируем пароль
+        user.setPassword(passwordEncoder.encode(user.getPassword()));
 
+        // Ставим роль, если не указана
+        if (user.getRole() == null) {
+            user.setRole(Role.ROLE_USER);
+        }
 
-    public void saveUser(User user) {
-        BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
-        String encodedPassword = passwordEncoder.encode(user.getPassword());
-        user.setPassword(encodedPassword);
-        userRepository.save(user);
+        // Сохраняем
+        return userRepository.save(user);
     }
-
-
-
 }

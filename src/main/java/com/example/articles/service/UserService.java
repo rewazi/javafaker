@@ -10,9 +10,9 @@ public interface UserService {
     Optional<User> getUserById(Long id);
     User createUser(User user);
     User updateUser(Long id, User updatedUser);
-   
 
- 
+
+
 
 
 
@@ -22,5 +22,5 @@ public interface UserService {
 
     Optional<User> getUserById(UUID id);
 
-
+    User registerNewUser(User user);
 }
