@@ -10,17 +10,21 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-import java.util.UUID;
 
 @Controller
 @RequestMapping("/articles")
 public class ArticleController {
+
     private final ArticleService articleService;
     private final AuthorService authorService;
     private final TagService tagService;
 
     @Autowired
-    public ArticleController(ArticleService articleService, AuthorService authorService, TagService tagService) {
+    public ArticleController(
+            ArticleService articleService,
+            AuthorService authorService,
+            TagService tagService
+    ) {
         this.articleService = articleService;
         this.authorService = authorService;
         this.tagService = tagService;
@@ -29,15 +33,15 @@ public class ArticleController {
 
     @GetMapping
     public String getAllArticles(Model model) {
-        List<Article> articles = articleService.getAllArticles();
-        model.addAttribute("articles", articles);
+        model.addAttribute("articles", articleService.getAllArticles());
         return "articles/list";
     }
+
 
     @GetMapping("/{id}")
     public String getArticleById(@PathVariable Long id, Model model) {
         Article article = articleService.getArticleById(id)
-                .orElseThrow(() -> new IllegalArgumentException("Статья не найдена"));
+                .orElseThrow(() -> new IllegalArgumentException("Статья не найдена (id=" + id + ")"));
         model.addAttribute("article", article);
         return "articles/details";
     }
@@ -47,12 +51,16 @@ public class ArticleController {
         model.addAttribute("article", new Article());
         model.addAttribute("authors", authorService.getAllAuthors());
         model.addAttribute("tags", tagService.getAllTags());
-        return "articles/add";
+        return "articles/add"; // add.html
     }
 
     @PostMapping
-    public String createArticle(@ModelAttribute Article article) {
-        articleService.createArticle(article);
+    public String createArticle(
+            @ModelAttribute Article article,
+            @RequestParam Long authorId,
+            @RequestParam(required = false) List<Long> tagIds
+    ) {
+        articleService.createArticle(article, authorId, tagIds);  // <-- теперь реализован
         return "redirect:/articles";
     }
 
@@ -60,16 +68,24 @@ public class ArticleController {
     @GetMapping("/edit/{id}")
     public String showEditForm(@PathVariable Long id, Model model) {
         Article article = articleService.getArticleById(id)
-                .orElseThrow(() -> new IllegalArgumentException("Статья не найдена"));
+                .orElseThrow(() -> new IllegalArgumentException("Статья не найдена (id=" + id + ")"));
         model.addAttribute("article", article);
-        return "articles/form";
+        model.addAttribute("authors", authorService.getAllAuthors());
+        model.addAttribute("tags", tagService.getAllTags());
+        return "articles/edit"; // edit.html
     }
 
     @PostMapping("/update/{id}")
-    public String updateArticle(@PathVariable Long id, @ModelAttribute Article article) {
-        articleService.updateArticle(id, article);
+    public String updateArticle(
+            @PathVariable Long id,
+            @ModelAttribute Article article,
+            @RequestParam Long authorId,
+            @RequestParam(required = false) List<Long> tagIds
+    ) {
+        articleService.updateArticle(id, article, authorId, tagIds);
         return "redirect:/articles";
     }
+
 
     @GetMapping("/delete/{id}")
     public String deleteArticle(@PathVariable Long id) {
@@ -77,24 +93,24 @@ public class ArticleController {
         return "redirect:/articles";
     }
 
+
     @GetMapping("/by-author/{authorId}")
     public String getArticlesByAuthor(@PathVariable Long authorId, Model model) {
-        List<Article> articles = articleService.getArticlesByAuthor(authorId);
-        model.addAttribute("articles", articles);
+        model.addAttribute("articles", articleService.getArticlesByAuthor(authorId));
         return "articles/list";
     }
+
 
     @GetMapping("/by-tag/{tagId}")
     public String getArticlesByTag(@PathVariable Long tagId, Model model) {
-        List<Article> articles = articleService.getArticlesByTag(tagId);
-        model.addAttribute("articles", articles);
+        model.addAttribute("articles", articleService.getArticlesByTag(tagId));
         return "articles/list";
     }
 
+
     @GetMapping("/search")
     public String searchArticles(@RequestParam String query, Model model) {
-        List<Article> articles = articleService.searchArticles(query);
-        model.addAttribute("articles", articles);
+        model.addAttribute("articles", articleService.searchArticles(query));
         return "articles/list";
     }
 }

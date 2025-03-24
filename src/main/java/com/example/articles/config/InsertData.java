@@ -2,8 +2,11 @@ package com.example.articles.config;
 
 import com.example.articles.entities.*;
 import com.example.articles.repositories.*;
+import com.example.articles.roles.Role;
 import com.github.javafaker.Faker;
 import jakarta.annotation.PostConstruct;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Component;
 
 import java.time.LocalDateTime;
@@ -18,6 +21,9 @@ public class InsertData {
     private final ArticleRepository articleRepository;
     private final ArticleCommentRepository articleCommentRepository;
     private final ArticleFavoriteRepository articleFavoriteRepository;
+
+    @Autowired
+    private BCryptPasswordEncoder passwordEncoder;
 
     public InsertData(
             UserRepository userRepository,
@@ -37,9 +43,30 @@ public class InsertData {
 
     @PostConstruct
     public void init() {
+
         Faker faker = new Faker(Locale.forLanguageTag("en"));
 
-        // 1. Создаём авторов (Author)
+        // Check if the admin exists and remove duplicates if necessary
+        List<User> admins = userRepository.findByEmailContainingIgnoreCase("admin@example.com");
+
+        if (admins.size() > 1) {
+            System.out.println("Найдено " + admins.size() + " записей c email admin@example.com. Удаляем дубли...");
+            for (User dub : admins) {
+                userRepository.delete(dub);
+            }
+            createAdmin();
+        } else if (admins.size() == 1) {
+            System.out.println("Админ с email admin@example.com уже есть, ничего не делаем");
+        } else {
+            createAdmin();
+        }
+
+        // Create 3 predefined users
+        createUser("user1", "user1@example.com", "user123", Role.ROLE_USER);
+        createUser("user2", "user2@example.com", "user123", Role.ROLE_USER);
+        createUser("user3", "user3@example.com", "user123", Role.ROLE_USER);
+
+        // Create authors
         List<Author> authors = new ArrayList<>();
         for (int i = 0; i < 5; i++) {
             Author author = new Author();
@@ -49,21 +76,10 @@ public class InsertData {
         }
         authors = authorRepository.saveAll(authors);
 
-        // 2. Создаём пользователей (User)
-        List<User> users = new ArrayList<>();
-        for (int i = 0; i < 10; i++) {
-            User user = new User();
-            user.setCreatedAt(LocalDateTime.now().minusDays(faker.number().numberBetween(1, 30)));
-            user.setEmail(faker.internet().emailAddress());
-            user.setUsername(faker.name().username());
-            user.setImageUrl(faker.internet().avatar());
-            user.setPassword(faker.internet().password());
-            user.setBio(faker.lorem().sentence());
-            users.add(user);
-        }
-        users = userRepository.saveAll(users);
+        // Create users using Faker
+        createFakeUsers(faker);
 
-        // 3. Создаём теги (Tag)
+        // Create tags
         List<Tag> tags = new ArrayList<>();
         for (int i = 0; i < 5; i++) {
             Tag tag = new Tag();
@@ -73,7 +89,7 @@ public class InsertData {
         }
         tags = tagRepository.saveAll(tags);
 
-        // 4. Создаём статьи (Article) – author = один из Author
+        // Create articles
         List<Article> articles = new ArrayList<>();
         for (int i = 0; i < 20; i++) {
             Article article = new Article();
@@ -84,11 +100,9 @@ public class InsertData {
             article.setTitle(faker.book().title());
             article.setBody(faker.lorem().paragraph(3));
 
-            // Выбираем случайного автора из списка authors
             Author randomAuthor = authors.get(faker.number().numberBetween(0, authors.size()));
             article.setAuthor(randomAuthor);
 
-            // Присваиваем несколько случайных тегов
             Set<Tag> articleTags = new HashSet<>();
             int numTags = faker.number().numberBetween(1, 3);
             for (int j = 0; j < numTags; j++) {
@@ -101,7 +115,64 @@ public class InsertData {
         }
         articles = articleRepository.saveAll(articles);
 
-        // 5. Создаём комментарии (ArticleComment) – user = один из User
+        // Create comments and favorites for articles
+        createCommentsAndFavorites(articles);
+    }
+
+    private void createAdmin() {
+        User adminUser = new User();
+        adminUser.setUsername("admin");
+        adminUser.setEmail("admin@example.com");
+        adminUser.setPassword(passwordEncoder.encode("admin123"));
+        adminUser.setRole(Role.ROLE_ADMIN);
+        adminUser.setCreatedAt(LocalDateTime.now());
+        adminUser.setBio("I'm the admin user");
+        userRepository.save(adminUser);
+        System.out.println("Администратор admin@example.com (admin123) создан");
+    }
+
+    // Method to create predefined users
+    private void createUser(String username, String email, String password, Role role) {
+        User user = new User();
+        user.setUsername(username);
+        user.setEmail(email);
+        user.setPassword(passwordEncoder.encode(password));
+        user.setRole(role);
+        user.setCreatedAt(LocalDateTime.now());
+        user.setBio("I'm the " + username);
+        userRepository.save(user);
+        System.out.println(username + " created");
+    }
+
+    private void createFakeUsers(Faker faker) {
+        Set<String> usedEmails = new HashSet<>();
+        List<User> users = new ArrayList<>();
+        for (int i = 0; i < 10; i++) {
+            String email;
+            do {
+                email = faker.internet().emailAddress();
+            } while (usedEmails.contains(email));
+            usedEmails.add(email);
+
+            User user = new User();
+            user.setCreatedAt(LocalDateTime.now().minusDays(faker.number().numberBetween(1, 30)));
+            user.setEmail(email);
+            user.setUsername(faker.name().username());
+            user.setImageUrl(faker.internet().avatar());
+
+            String rawPassword = faker.internet().password();
+            user.setPassword(passwordEncoder.encode(rawPassword));
+            user.setBio(faker.lorem().sentence());
+            user.setRole(Role.ROLE_USER);
+
+            users.add(user);
+        }
+        users = userRepository.saveAll(users);
+        System.out.println("Фейковые пользователи созданы");
+    }
+
+    private void createCommentsAndFavorites(List<Article> articles) {
+        Faker faker = new Faker(Locale.forLanguageTag("en"));
         List<ArticleComment> comments = new ArrayList<>();
         for (Article article : articles) {
             int commentCount = faker.number().numberBetween(1, 6);
@@ -112,7 +183,8 @@ public class InsertData {
                 comment.setBody(faker.lorem().sentence());
                 comment.setArticle(article);
 
-                // Выбираем случайного пользователя
+                // Choose a random user for the comment
+                List<User> users = userRepository.findAll();
                 User randomUser = users.get(faker.number().numberBetween(0, users.size()));
                 comment.setUser(randomUser);
 
@@ -121,7 +193,6 @@ public class InsertData {
         }
         articleCommentRepository.saveAll(comments);
 
-        // 6. Создаём избранное (ArticleFavorite) – user = один из User
         List<ArticleFavorite> favorites = new ArrayList<>();
         for (Article article : articles) {
             int favCount = faker.number().numberBetween(0, 4);
@@ -131,7 +202,8 @@ public class InsertData {
                 favorite.setUpdatedAt(LocalDateTime.now());
                 favorite.setArticle(article);
 
-                // Выбираем случайного пользователя
+                // Choose a random user for the favorite
+                List<User> users = userRepository.findAll();
                 User randomUser = users.get(faker.number().numberBetween(0, users.size()));
                 favorite.setUser(randomUser);
 

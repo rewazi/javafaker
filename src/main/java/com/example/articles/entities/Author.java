@@ -22,7 +22,7 @@ public class Author {
     private String bio;
 
 
-    @OneToMany(mappedBy = "author") // поле author в Article (типа Author)
+    @OneToMany(mappedBy = "author")
     private List<Article> articles;
 
     @CreationTimestamp

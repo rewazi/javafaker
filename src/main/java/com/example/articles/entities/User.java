@@ -1,5 +1,6 @@
 package com.example.articles.entities;
 
+import com.example.articles.roles.Role;
 import jakarta.persistence.*;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -103,4 +104,14 @@ public class User {
     public void setFavorites(List<ArticleFavorite> favorites) {
         this.favorites = favorites;
     }
+
+    public Role getRole() {
+        return role;
+    }
+
+    public void setRole(Role role) {
+        this.role = role;
+    }
+
+    private Role role = Role.ROLE_USER;
 }

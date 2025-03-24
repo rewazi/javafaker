@@ -2,6 +2,8 @@ package com.example.articles.service;
 
 import com.example.articles.entities.User;
 import com.example.articles.repositories.UserRepository;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import java.util.List;
 import java.util.Optional;
@@ -62,6 +64,14 @@ public class UserServiceImpl implements UserService {
     }
 
 
+
+
+    public void saveUser(User user) {
+        BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
+        String encodedPassword = passwordEncoder.encode(user.getPassword());
+        user.setPassword(encodedPassword);
+        userRepository.save(user);
+    }
 
 
 

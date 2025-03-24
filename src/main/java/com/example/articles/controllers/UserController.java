@@ -3,6 +3,7 @@ package com.example.articles.controllers;
 import com.example.articles.entities.User;
 import com.example.articles.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -56,6 +57,13 @@ public class UserController {
     public String deleteUser(@PathVariable Long id) {
         userService.deleteUser(id);
         return "redirect:/users";
+
+
+
+
+
+
+
     }
 }
 
