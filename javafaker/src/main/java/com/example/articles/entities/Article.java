@@ -1,22 +1,16 @@
 package com.example.articles.entities;
 
 import jakarta.persistence.*;
-import lombok.*;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-import org.hibernate.Hibernate;
 
 @Entity
 @Table(name = "article")
-@Getter
-@Setter
-@NoArgsConstructor
-@AllArgsConstructor
-@Builder
 public class Article {
+
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -35,7 +29,7 @@ public class Article {
     private String body;
 
     @ManyToOne
-    @JoinColumn(name = "author_id")
+    @JoinColumn(name = "user_id")
     private User author;
 
     @ManyToMany
@@ -52,28 +46,88 @@ public class Article {
     @OneToMany(mappedBy = "article", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<ArticleFavorite> favorites = new ArrayList<>();
 
+    @ManyToOne
+    @JoinColumn(name = "owner_id", referencedColumnName = "id")
+    private User owner;
+
+
+
     public Long getId() {
         return id;
     }
+    public void setId(Long id) {
+        this.id = id;
+    }
+    public LocalDateTime getCreatedAt() {
+        return createdAt;
+    }
+    public void setCreatedAt(LocalDateTime createdAt) {
+        this.createdAt = createdAt;
+    }
+    public LocalDateTime getUpdatedAt() {
+        return updatedAt;
+    }
+    public void setUpdatedAt(LocalDateTime updatedAt) {
+        this.updatedAt = updatedAt;
+    }
+    public String getDescription() {
+        return description;
+    }
+    public void setDescription(String description) {
+        this.description = description;
+    }
+    public String getSlug() {
+        return slug;
+    }
+    public void setSlug(String slug) {
+        this.slug = slug;
+    }
+    public String getTitle() {
+        return title;
+    }
+    public void setTitle(String title) {
+        this.title = title;
+    }
+    public String getBody() {
+        return body;
+    }
+    public void setBody(String body) {
+        this.body = body;
+    }
 
-    @Override
-    public String toString() {
-        String tagInfo;
-        if (Hibernate.isInitialized(tags)) {
-            tagInfo = String.valueOf(tags.size());
-        } else {
-            tagInfo = "не загружены";
-        }
-        return "Article{" +
-                "id=" + id +
-                ", createdAt=" + createdAt +
-                ", updatedAt=" + updatedAt +
-                ", description='" + description + '\'' +
-                ", slug='" + slug + '\'' +
-                ", title='" + title + '\'' +
-                ", body='" + (body != null ? (body.length() > 30 ? body.substring(0, 30) + "..." : body) : null) + '\'' +
-                ", authorId=" + (author != null ? author.getId() : null) +
-                ", tagsCount=" + tagInfo +
-                '}';
+    public User getAuthor() {
+        return author;
+    }
+    public void setAuthor(User author) {
+        this.author = author;
+    }
+
+    public Set<Tag> getTags() {
+        return tags;
+    }
+    public void setTags(Set<Tag> tags) {
+        this.tags = tags;
+    }
+
+    public List<ArticleComment> getComments() {
+        return comments;
+    }
+    public void setComments(List<ArticleComment> comments) {
+        this.comments = comments;
+    }
+
+    public List<ArticleFavorite> getFavorites() {
+        return favorites;
+    }
+    public void setFavorites(List<ArticleFavorite> favorites) {
+        this.favorites = favorites;
+    }
+
+
+    public User getOwner() {
+        return owner;
+    }
+    public void setOwner(User owner) {
+        this.owner = owner;
     }
 }

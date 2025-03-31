@@ -1,12 +1,13 @@
 package com.example.articles.entities;
 
+import com.example.articles.roles.Role;
 import jakarta.persistence.*;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
 @Entity
-@Table(name = "users")
+@Table(name = "user") // Таблица называется "users"
 public class User {
 
     @Id
@@ -15,15 +16,17 @@ public class User {
 
     private LocalDateTime createdAt;
     private String email;
-    private String username;
+
+        private String username;
     private String imageUrl;
     private String password;
 
+    private Role role = Role.USER_ROLE;
+
+
+
     @Column(columnDefinition = "TEXT")
     private String bio;
-
-    @OneToMany(mappedBy = "author", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<Article> articles = new ArrayList<>();
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<ArticleComment> comments = new ArrayList<>();
@@ -31,7 +34,8 @@ public class User {
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<ArticleFavorite> favorites = new ArrayList<>();
 
-    // Геттеры и сеттеры:
+
+
     public Long getId() {
         return id;
     }
@@ -74,12 +78,6 @@ public class User {
     public void setBio(String bio) {
         this.bio = bio;
     }
-    public List<Article> getArticles() {
-        return articles;
-    }
-    public void setArticles(List<Article> articles) {
-        this.articles = articles;
-    }
     public List<ArticleComment> getComments() {
         return comments;
     }
@@ -93,15 +91,11 @@ public class User {
         this.favorites = favorites;
     }
 
-    @Override
-    public String toString() {
-        return "User{" +
-                "id=" + id +
-                ", createdAt=" + createdAt +
-                ", email='" + email + '\'' +
-                ", username='" + username + '\'' +
-                ", imageUrl='" + imageUrl + '\'' +
-                ", bio='" + bio + '\'' +
-                '}';
+    public Role getRole() {
+        return role;
+    }
+
+    public void setRole(Role role) {
+        this.role = role;
     }
 }

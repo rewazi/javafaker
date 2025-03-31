@@ -1,17 +1,10 @@
 package com.example.articles.entities;
 
 import jakarta.persistence.*;
-import lombok.*;
-
 import java.time.LocalDateTime;
 
 @Entity
 @Table(name = "article_favorite")
-@Getter
-@Setter
-@NoArgsConstructor
-@AllArgsConstructor
-@Builder
 public class ArticleFavorite {
 
     @Id
@@ -21,24 +14,57 @@ public class ArticleFavorite {
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
 
-    // Какая статья «лайкнута»/добавлена в избранное
     @ManyToOne
-    @JoinColumn(name = "article_id")
+    @JoinColumn(name = "article_id", referencedColumnName = "id", nullable = false)
     private Article article;
 
-    // Какой пользователь добавил статью в избранное
     @ManyToOne
-    @JoinColumn(name = "user_id")
+    @JoinColumn(name = "user_id", referencedColumnName = "id", nullable = false)
     private User user;
+
+
+
+    public Long getId() {
+        return id;
+    }
+    public void setId(Long id) {
+        this.id = id;
+    }
+    public LocalDateTime getCreatedAt() {
+        return createdAt;
+    }
+    public void setCreatedAt(LocalDateTime createdAt) {
+        this.createdAt = createdAt;
+    }
+    public LocalDateTime getUpdatedAt() {
+        return updatedAt;
+    }
+    public void setUpdatedAt(LocalDateTime updatedAt) {
+        this.updatedAt = updatedAt;
+    }
+    public Article getArticle() {
+        return article;
+    }
+    public void setArticle(Article article) {
+        this.article = article;
+    }
+    public User getUser() {
+        return user;
+    }
+    public void setUser(User user) {
+        this.user = user;
+    }
 
     @Override
     public String toString() {
+        Long articleId = (article != null) ? article.getId() : null;
+        Long userId = (user != null) ? user.getId() : null;
         return "ArticleFavorite{" +
                 "id=" + id +
                 ", createdAt=" + createdAt +
                 ", updatedAt=" + updatedAt +
-                ", articleId=" + (article != null ? article.getId() : null) +
-                ", userId=" + (user != null ? user.getId() : null) +
+                ", articleId=" + articleId +
+                ", userId=" + userId +
                 '}';
     }
 }

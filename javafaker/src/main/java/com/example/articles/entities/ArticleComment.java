@@ -1,19 +1,10 @@
 package com.example.articles.entities;
 
 import jakarta.persistence.*;
-import lombok.*;
-
 import java.time.LocalDateTime;
-
-import static java.awt.SystemColor.text;
 
 @Entity
 @Table(name = "article_comment")
-@Getter
-@Setter
-@NoArgsConstructor
-@AllArgsConstructor
-@Builder
 public class ArticleComment {
 
     @Id
@@ -26,21 +17,58 @@ public class ArticleComment {
     @Column(columnDefinition = "TEXT")
     private String body;
 
-    // К какой статье относится комментарий
     @ManyToOne
-    @JoinColumn(name = "article_id")
+    @JoinColumn(name = "article_id", referencedColumnName = "id", nullable = false)
     private Article article;
 
-    // Какому пользователю принадлежит комментарий
     @ManyToOne
-    @JoinColumn(name = "user_id")
+    @JoinColumn(name = "user_id", referencedColumnName = "id", nullable = false)
     private User user;
+
+
+
+    public Long getId() {
+        return id;
+    }
+    public void setId(Long id) {
+        this.id = id;
+    }
+    public LocalDateTime getCreatedAt() {
+        return createdAt;
+    }
+    public void setCreatedAt(LocalDateTime createdAt) {
+        this.createdAt = createdAt;
+    }
+    public LocalDateTime getUpdatedAt() {
+        return updatedAt;
+    }
+    public void setUpdatedAt(LocalDateTime updatedAt) {
+        this.updatedAt = updatedAt;
+    }
+    public String getBody() {
+        return body;
+    }
+    public void setBody(String body) {
+        this.body = body;
+    }
+    public Article getArticle() {
+        return article;
+    }
+    public void setArticle(Article article) {
+        this.article = article;
+    }
+    public User getUser() {
+        return user;
+    }
+    public void setUser(User user) {
+        this.user = user;
+    }
 
     @Override
     public String toString() {
         return "ArticleComment{" +
                 "id=" + id +
-                ", text='" + text + '\'' +
+                ", body='" + body + '\'' +
                 ", createdAt=" + createdAt +
                 '}';
     }
