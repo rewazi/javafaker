@@ -6,9 +6,9 @@ import java.util.List;
 
 public interface ArticleFavoriteRepository extends JpaRepository<ArticleFavorite, Long> {
 
-
+    // Поиск "лайков" пользователя по его id
     List<ArticleFavorite> findByUserId(Long userId);
 
-
+    // Поиск "лайков" к статье по её id
     List<ArticleFavorite> findByArticleId(Long articleId);
 }

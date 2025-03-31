@@ -3,7 +3,6 @@ package com.example.articles.entities;
 import jakarta.persistence.*;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
-
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -21,7 +20,6 @@ public class Author {
     @Column(length = 255)
     private String bio;
 
-
     @OneToMany(mappedBy = "author")
     private List<Article> articles;
 
@@ -32,64 +30,44 @@ public class Author {
     @UpdateTimestamp
     private LocalDateTime updatedAt;
 
+    // Конструкторы, геттеры и сеттеры
+
     public Author() {
     }
-
-    public Author(Long id, String name, String bio, List<Article> articles,
-                  LocalDateTime createdAt, LocalDateTime updatedAt) {
-        this.id = id;
-        this.name = name;
-        this.bio = bio;
-        this.articles = articles;
-        this.createdAt = createdAt;
-        this.updatedAt = updatedAt;
-    }
-
 
     public Long getId() {
         return id;
     }
-
-    public String getName() {
-        return name;
-    }
-
-    public String getBio() {
-        return bio;
-    }
-
-    public List<Article> getArticles() {
-        return articles;
-    }
-
-    public LocalDateTime getCreatedAt() {
-        return createdAt;
-    }
-
-    public LocalDateTime getUpdatedAt() {
-        return updatedAt;
-    }
-
     public void setId(Long id) {
         this.id = id;
     }
-
+    public String getName() {
+        return name;
+    }
     public void setName(String name) {
         this.name = name;
     }
-
+    public String getBio() {
+        return bio;
+    }
     public void setBio(String bio) {
         this.bio = bio;
     }
-
+    public List<Article> getArticles() {
+        return articles;
+    }
     public void setArticles(List<Article> articles) {
         this.articles = articles;
     }
-
+    public LocalDateTime getCreatedAt() {
+        return createdAt;
+    }
     public void setCreatedAt(LocalDateTime createdAt) {
         this.createdAt = createdAt;
     }
-
+    public LocalDateTime getUpdatedAt() {
+        return updatedAt;
+    }
     public void setUpdatedAt(LocalDateTime updatedAt) {
         this.updatedAt = updatedAt;
     }

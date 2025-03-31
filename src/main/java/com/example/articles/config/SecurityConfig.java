@@ -3,66 +3,49 @@ package com.example.articles.config;
 import com.example.articles.service.CustomUserDetailsService;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
-import org.springframework.security.core.userdetails.UserDetailsService;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.NoOpPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
-
-
 
 @EnableWebSecurity
 @Configuration
 public class SecurityConfig {
 
-    @Bean
-    public UserDetailsService userDetailsService() {
-        return new CustomUserDetailsService();
-    }
+    private final CustomUserDetailsService userDetailsService;
 
-    @Bean
-    public BCryptPasswordEncoder passwordEncoder() {
-        return new BCryptPasswordEncoder();
-    }
-
-    @Bean
-    public DaoAuthenticationProvider daoAuthenticationProvider() {
-        DaoAuthenticationProvider auth = new DaoAuthenticationProvider();
-        auth.setUserDetailsService(userDetailsService());
-        auth.setPasswordEncoder(passwordEncoder());
-        return auth;
+    public SecurityConfig(CustomUserDetailsService userDetailsService) {
+        this.userDetailsService = userDetailsService;
     }
 
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
+        http
+                .csrf(csrf -> csrf.ignoringRequestMatchers("/login"))
+                .authorizeHttpRequests(authorize -> authorize
 
-        http.authenticationProvider(daoAuthenticationProvider());
+                        .requestMatchers(HttpMethod.GET, "/articles").permitAll()
 
-        http.authorizeHttpRequests(auth -> auth
-
-                        .requestMatchers(
-                                "/articles",
-                                "/registration",
-                                "/register"
-                        ).permitAll()
+                        .requestMatchers("/login", "/registration", "/css/**", "/js/**", "/images/**").permitAll()
 
                         .anyRequest().authenticated()
                 )
                 .formLogin(form -> form
-
-                        .usernameParameter("email")
-
-                        .defaultSuccessUrl("/users", true)
+                        .loginPage("/login")
+                        .loginProcessingUrl("/login")
+                        .defaultSuccessUrl("/articles", true)
                         .permitAll()
                 )
-                .logout(logout -> logout
-
-                        .logoutSuccessUrl("/")
-                        .permitAll()
-                );
+                .logout(logout -> logout.permitAll());
 
         return http.build();
+    }
+
+    @Bean
+    public PasswordEncoder passwordEncoder() {
+        // Для демонстрации используем NoOpPasswordEncoder, который не шифрует пароль
+        return NoOpPasswordEncoder.getInstance();
     }
 }

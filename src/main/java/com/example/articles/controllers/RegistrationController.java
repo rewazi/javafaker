@@ -1,33 +1,48 @@
 package com.example.articles.controllers;
 
 import com.example.articles.entities.User;
+import com.example.articles.roles.Role;
 import com.example.articles.service.UserService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+
+import java.time.LocalDateTime;
 
 @Controller
 public class RegistrationController {
 
     private final UserService userService;
 
+    @Autowired
     public RegistrationController(UserService userService) {
         this.userService = userService;
     }
 
-    // Показать страницу регистрации (GET /register)
-    @GetMapping("/register")
-    public String showRegistrationForm(Model model) {
-        model.addAttribute("user", new User()); // Пустой объект User
-        return "register"; // имя шаблона register.html
+    @GetMapping("/registration")
+    public String showRegistrationForm() {
+        return "registration";  // Шаблон: src/main/resources/templates/registration.html
     }
 
-    // Обработка формы (POST /register)
-    @PostMapping("/register")
-    public String processRegister(@ModelAttribute("user") User user) {
-        userService.registerNewUser(user);
-        return "redirect:/login";
+    @PostMapping("/registration")
+    public String registerUser(@ModelAttribute User user) {
+        // Если email не указан, задаём его по умолчанию
+        if (user.getEmail() == null || user.getEmail().trim().isEmpty()) {
+            user.setEmail(user.getUsername() + "@example.com");
+        }
+        // Задаём роль пользователя, дату создания и, при необходимости, другие поля
+        user.setRole(Role.USER_ROLE);
+        user.setCreatedAt(LocalDateTime.now());
+        if (user.getImageUrl() == null || user.getImageUrl().trim().isEmpty()) {
+            user.setImageUrl("https://via.placeholder.com/150");
+        }
+        if (user.getBio() == null) {
+            user.setBio("");
+        }
+        // Вызываем сервис для сохранения пользователя
+        userService.createUser(user);
+        return "redirect:/login";  // Перенаправление на страницу логина после успешной регистрации
     }
-
 }
-
