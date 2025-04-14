@@ -18,20 +18,19 @@ public class InsertData {
     private final TagRepository tagRepository;
     private final ArticleRepository articleRepository;
     private final ArticleCommentRepository articleCommentRepository;
-    private final ArticleFavoriteRepository articleFavoriteRepository;
+
 
     public InsertData(UserRepository userRepository,
                       AuthorRepository authorRepository,
                       TagRepository tagRepository,
                       ArticleRepository articleRepository,
-                      ArticleCommentRepository articleCommentRepository,
-                      ArticleFavoriteRepository articleFavoriteRepository) {
+                      ArticleCommentRepository articleCommentRepository) {
         this.userRepository = userRepository;
         this.authorRepository = authorRepository;
         this.tagRepository = tagRepository;
         this.articleRepository = articleRepository;
         this.articleCommentRepository = articleCommentRepository;
-        this.articleFavoriteRepository = articleFavoriteRepository;
+
     }
 
     @PostConstruct
@@ -132,19 +131,8 @@ public class InsertData {
         articleCommentRepository.saveAll(comments);
 
 
-        List<ArticleFavorite> favorites = new ArrayList<>();
-        for (Article article : articles) {
-            int favCount = faker.number().numberBetween(0, 4);
-            for (int i = 0; i < favCount; i++) {
-                ArticleFavorite favorite = new ArticleFavorite();
-                favorite.setCreatedAt(LocalDateTime.now().minusDays(faker.number().numberBetween(1, 30)).withSecond(0).withNano(0));
-                favorite.setUpdatedAt(LocalDateTime.now().withSecond(0).withNano(0));
-                favorite.setArticle(article);
-                User randomUser = users.get(faker.number().numberBetween(0, users.size()));
-                favorite.setUser(randomUser);
-                favorites.add(favorite);
-            }
-        }
-        articleFavoriteRepository.saveAll(favorites);
+
+
+
     }
 }

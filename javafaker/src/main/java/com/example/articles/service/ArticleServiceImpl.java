@@ -21,7 +21,7 @@ public class ArticleServiceImpl implements ArticleService {
 
     @Override
     public List<Article> getAllArticles() {
-        return articleRepository.findAll();
+        return articleRepository.findAllByOrderByCreatedAtDesc();
     }
 
     @Override
@@ -60,16 +60,20 @@ public class ArticleServiceImpl implements ArticleService {
         articleRepository.deleteById(id);
     }
 
-    @Override
-    public List<Article> searchArticles(String query) {
-        return articleRepository.searchArticles(query);
-    }
-    @Override
-    public List<Author> searchAuthors(String query) {
-        return searchAuthors(query);
+    public List<Article> searchAll(String query) {
+        return articleRepository.searchAll(query);
     }
 
 
+    @Override
+    public List<Article> getArticlesByAuthorId(Long authorId) {
+        return articleRepository.findByAuthorIdOrderByCreatedAtDesc(authorId);
+    }
+
+    @Override
+    public List<Article> getArticlesByTagId(Long tagId) {
+        return articleRepository.findByTagsIdOrderByCreatedAtDesc(tagId);
+    }
 
 
     @Override

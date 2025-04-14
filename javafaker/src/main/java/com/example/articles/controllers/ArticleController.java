@@ -213,7 +213,7 @@ public class ArticleController {
         }
         User currentUser = userRepository.findByUsername(auth.getName());
 
-        // Создаем новый комментарий
+
         ArticleComment comment = new ArticleComment();
         comment.setBody(body);
         comment.setArticle(article);
@@ -230,7 +230,19 @@ public class ArticleController {
 
     @GetMapping("/search")
     public String searchArticles(@RequestParam("q") String query, Model model) {
-        List<Article> articles = articleService.searchArticles(query);
+        List<Article> articles = articleService.searchAll(query);
+        model.addAttribute("articles", articles);
+        return "articles/list";
+    }
+    @GetMapping("/by-author/{authorId}")
+    public String getArticlesByAuthor(@PathVariable Long authorId, Model model) {
+        List<Article> articles = articleService.getArticlesByAuthorId(authorId);
+        model.addAttribute("articles", articles);
+        return "articles/list";
+    }
+    @GetMapping("/by-tag/{tagId}")
+    public String getArticlesByTag(@PathVariable Long tagId, Model model) {
+        List<Article> articles = articleService.getArticlesByTagId(tagId);
         model.addAttribute("articles", articles);
         return "articles/list";
     }

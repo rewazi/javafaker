@@ -19,7 +19,7 @@
                 <li class="nav-item">
                     <a class="nav-link" href="/articles">Статьи</a>
                 </li>
-                <li class="nav-item" th:if="${currentUser != null and currentUser.role == T(com.example.articles.entities.User.Roles).ADMIN_ROLE}">
+                <li class="nav-item" th:if="${currentUser != null and currentUser.role == T(com.example.articles.roles.Role).ADMIN_ROLE}">
                     <a class="nav-link" href="/users">Пользователи</a>
                 </li>
                 <li class="nav-item">
@@ -44,7 +44,7 @@
         <p><strong>Содержимое:</strong></p>
         <p th:text="${article.body}"></p>
 
-        <p><strong>Автор:</strong> <span th:text="${article.author.name}"></span></p>
+        <p><strong>Автор:</strong> <span th:text="${article.author.username}"></span></p>
 
         <p>
             <strong>Дата создания:</strong>
@@ -63,7 +63,7 @@
         <div class="d-flex justify-content-between mt-3">
             <a th:href="@{/articles/edit/{id}(id=${article.id})}" class="btn btn-warning">Редактировать</a>
             <a th:if="${currentUser != null and ((article.owner != null and article.owner.username == currentUser.username)
-            or (currentUser.role == T(com.example.articles.entities.User.Roles).ADMIN_ROLE))}"
+            or (currentUser.role == T(com.example.articles.roles.Role).ADMIN_ROLE))}"
                th:href="@{/articles/delete/{id}(id=${article.id})}" class="btn btn-danger"
                onclick="return confirm('Вы уверены, что хотите удалить статью?')">Удалить</a>
             <a href="/articles" class="btn btn-outline-secondary">Назад к списку статей</a>

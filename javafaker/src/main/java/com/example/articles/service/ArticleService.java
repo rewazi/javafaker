@@ -13,7 +13,8 @@ public interface ArticleService {
     Article createArticle(Article article);
     Article updateArticle(Long id, Article updatedArticle);
     void deleteArticle(Long id);
-    List<Article> searchArticles(String query);
-    List<Author> searchAuthors(String query);
+    List<Article> searchAll(String query);
+    List<Article> getArticlesByAuthorId(Long authorId);
+    List<Article> getArticlesByTagId(Long tagId);
 
 }
