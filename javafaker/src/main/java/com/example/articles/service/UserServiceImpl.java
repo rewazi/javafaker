@@ -23,6 +23,14 @@ public class UserServiceImpl implements UserService {
         user.setPassword(encoder().encode(user.getPassword()));
         userRepository.save(user);
     }
+    @Override
+    public User findByUsername(String username) {
+        return userRepository.findByUsername(username);
+    }
+    @Override
+    public User findByEmail(String email) {
+        return userRepository.findByEmail(email);
+    }
 
     @Override
     public List<User> getAllUsers() {
@@ -34,12 +42,19 @@ public class UserServiceImpl implements UserService {
         return userRepository.findById(id);
     }
 
+
     @Override
     public User createUser(User user) {
+        if (findByUsername(user.getUsername()) != null) {
+            throw new RuntimeException("Пользователь с таким логином уже существует!");
+        }
+        // Или используйте своё исключение и перехватывайте его
         return userRepository.save(user);
     }
 
-    @Override
+
+
+@Override
     public User updateUser(Long id, User updatedUser) {
         return userRepository.findById(id)
                 .map(user -> {
@@ -58,4 +73,6 @@ public class UserServiceImpl implements UserService {
     public void deleteUser(Long id) {
         userRepository.deleteById(id);
     }
+
+
 }

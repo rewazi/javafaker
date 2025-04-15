@@ -27,9 +27,14 @@ public class Article {
 
     @Column(columnDefinition = "TEXT")
     private String body;
+    @ManyToOne
+    @JoinColumn(name = "owner_id")
+    private User owner;
+
+
 
     @ManyToOne
-    @JoinColumn(name = "user_id")
+    @JoinColumn(name = "author_id")
     private User author;
 
     @ManyToMany
@@ -46,9 +51,6 @@ public class Article {
     @OneToMany(mappedBy = "article", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<ArticleFavorite> favorites = new ArrayList<>();
 
-    @ManyToOne
-    @JoinColumn(name = "owner_id", referencedColumnName = "id")
-    private User owner;
 
 
 

@@ -57,8 +57,16 @@ public class ArticleServiceImpl implements ArticleService {
 
     @Override
     public void deleteArticle(Long id) {
-        articleRepository.deleteById(id);
+        Article article = articleRepository.findById(id)
+                .orElseThrow(() -> new IllegalArgumentException("Article not found with id " + id));
+
+        // Удаляем связи с тегами (если нет ON DELETE CASCADE в БД)
+        article.getTags().clear();
+
+        // Теперь удаляем статью
+        articleRepository.delete(article);
     }
+
 
     public List<Article> searchAll(String query) {
         return articleRepository.searchAll(query);
