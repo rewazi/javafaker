@@ -91,3 +91,7 @@ TagService / TagServiceImpl
 
 UserService / UserServiceImpl
 Предоставляют бизнес-логику для управления пользователями: создание, редактирование, удаление, поиск по логину и т. д.
+
+
+
+main class ArticlesApplication - запускает приложение
