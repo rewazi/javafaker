@@ -60,10 +60,9 @@ public class ArticleServiceImpl implements ArticleService {
         Article article = articleRepository.findById(id)
                 .orElseThrow(() -> new IllegalArgumentException("Article not found with id " + id));
 
-        // Удаляем связи с тегами (если нет ON DELETE CASCADE в БД)
         article.getTags().clear();
 
-        // Теперь удаляем статью
+
         articleRepository.delete(article);
     }
 

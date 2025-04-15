@@ -123,7 +123,7 @@ public class User {
         this.favorites = favorites;
     }
 
-    // Геттер и сеттер для статей
+
     public List<Article> getArticles() {
         return articles;
     }

@@ -51,16 +51,16 @@
                 <textarea id="body" name="body" class="form-control" rows="5" required></textarea>
             </div>
 
-            <!-- Скрытое поле для текущего пользователя (автор) -->
+
             <input type="hidden" name="authorId" th:value="${currentUser.id}" />
 
-            <!-- Отображение никнейма текущего пользователя -->
+
             <div class="mb-3">
                 <label for="author" class="form-label">Автор:</label>
                 <input type="text" id="author" name="author" class="form-control" th:value="${currentUser.username}" disabled />
             </div>
 
-            <!-- Блок выбора тегов в виде чекбоксов -->
+
             <div class="mb-3">
                 <label class="form-label">Теги:</label>
                 <div th:each="tag : ${tags}">

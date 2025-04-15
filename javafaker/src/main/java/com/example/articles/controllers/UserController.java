@@ -36,9 +36,9 @@ public class UserController {
 
     @PostMapping("/create")
     public String createUser(@ModelAttribute("user") User user, Model model) {
-        // Сначала проверяем, существует ли уже пользователь с таким логином
+
         if (userService.findByUsername(user.getUsername()) != null) {
-            // Если да — показываем ошибку и возвращаемся на форму
+
             model.addAttribute("error", "Пользователь с таким именем уже существует!");
             model.addAttribute("user", user);
             return "users/add";
@@ -58,7 +58,7 @@ public class UserController {
             model.addAttribute("user", user.get());
             return "users/edit";
         } else {
-            // Если пользователь не найден — можно показать ошибку или перейти к списку
+
             return "redirect:/users";
         }
     }
@@ -74,10 +74,10 @@ public class UserController {
         }
 
         User currentUser = existing.get();
-        // Если пользователь меняет логин, проверяем, не занят ли он другим
+
         if (!currentUser.getUsername().equals(updatedUser.getUsername())) {
             User userWithSameName = userService.findByUsername(updatedUser.getUsername());
-            // Если логин уже у кого-то занят (и это не сам он), выдаём ошибку
+
             if (userWithSameName != null && !userWithSameName.getId().equals(id)) {
                 model.addAttribute("error", "Логин уже используется другим пользователем!");
                 model.addAttribute("user", updatedUser);
@@ -85,7 +85,7 @@ public class UserController {
             }
         }
 
-        // Обновляем
+
         userService.updateUser(id, updatedUser);
         return "redirect:/users";
     }
